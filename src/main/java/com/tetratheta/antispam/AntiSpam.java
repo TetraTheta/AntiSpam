@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,8 +20,8 @@ import java.util.UUID;
 public final class AntiSpam extends JavaPlugin implements Listener, CommandExecutor {
     //UUID playerUuid = new UUID(0, 0);
     Map<UUID, Integer> playerMap = new HashMap<>();
-    int minute, limit, tempban_time;
-    String punish, message;
+    int limit_second, limit_count, tempban_time;
+    String punish_type, message;
     BanList banList = getServer().getBanList(BanList.Type.NAME);
 
     @Override
@@ -62,19 +61,19 @@ public final class AntiSpam extends JavaPlugin implements Listener, CommandExecu
         } else {
             playerMap.put(uuid, 1);
         }
-        if (playerMap.get(uuid) > limit) {
+        if (playerMap.get(uuid) > limit_count) {
             // do something to player!
-            if ("tempban".equals(punish)) {
+            if ("tempban".equals(punish_type)) {
                 long expire = System.currentTimeMillis() + (tempban_time * 60 * 1000);
                 banList.addBan(e.getPlayer().getName(), message, new Date(expire), "AntiSpam Login");
                 e.getPlayer().kickPlayer(message);
                 playerMap.remove(uuid);
                 return;
-            } else if ("kick".equals(punish)) {
+            } else if ("kick".equals(punish_type)) {
                 e.getPlayer().kickPlayer(message);
                 playerMap.remove(uuid);
                 return;
-            } else if ("ban".equals(punish)) {
+            } else if ("ban".equals(punish_type)) {
                 banList.addBan(e.getPlayer().getName(), message, null, "AntiSpam Login");
                 e.getPlayer().kickPlayer(message);
                 playerMap.remove(uuid);
@@ -83,7 +82,7 @@ public final class AntiSpam extends JavaPlugin implements Listener, CommandExecu
         }
 
         BukkitScheduler bukkitScheduler = this.getServer().getScheduler();
-        bukkitScheduler.scheduleSyncDelayedTask(this, () -> playerMap.remove(uuid), 20 * minute);
+        bukkitScheduler.scheduleSyncDelayedTask(this, () -> playerMap.remove(uuid), 20 * limit_second);
     }
 
     public void checkConfig() {
@@ -95,23 +94,23 @@ public final class AntiSpam extends JavaPlugin implements Listener, CommandExecu
         FileConfiguration config = this.getConfig();
 
         // Checking each sections are set (because i am obsessive) and get it
-        if (!config.isSet("login-spam.minute")) {
-            getLogger().warning("login-spam.minute is not found. using default value.");
-            minute = 60;
+        if (!config.isSet("login-spam.limit-second")) {
+            getLogger().warning("login-spam.limit-second is not found. using default value.");
+            limit_second = 60;
         } else {
-            minute = config.getInt("login-spam.minute");
+            limit_second = config.getInt("login-spam.limit-second");
         }
-        if (!config.isSet("login-spam.limit")) {
-            getLogger().warning("login-spam.limit is not found. using default value.");
-            limit = 3;
+        if (!config.isSet("login-spam.limit-count")) {
+            getLogger().warning("login-spam.limit-count is not found. using default value.");
+            limit_count = 3;
         } else {
-            limit = config.getInt("login-spam.limit");
+            limit_count = config.getInt("login-spam.limit-count");
         }
         if (!config.isSet("login-spam.punish-type")) {
             getLogger().warning("login-spam.punish-type is not found. using default value.");
-            punish = "tempban";
+            punish_type = "tempban";
         } else {
-            punish = config.getString("login-spam.punish-type");
+            punish_type = config.getString("login-spam.punish-type");
         }
         if (!config.isSet("login-spam.tempban-time")) {
             getLogger().warning("login-spam.tempban-time is not found. using default value.");

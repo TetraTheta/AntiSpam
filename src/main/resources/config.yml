@@ -1,8 +1,8 @@
 login-spam:
-  # minute: how many user can login in? [Second]
-  minute: 60
-  # limit: how many time user can login?
-  limit: 3
+  # limit-second: how many user can login in? [Second]
+  limit-second: 60
+  # limit-count: how many time user can login?
+  limit-count: 3
   # punish-type: how do you want to punish those people?
   # kick, tempban, ban
   punish-type: tempban
