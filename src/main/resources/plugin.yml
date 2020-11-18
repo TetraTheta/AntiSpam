@@ -1,0 +1,12 @@
+name: AntiSpam
+version: ${project.version}
+main: com.tetratheta.AntiSpam.AntiSpam
+api-version: 1.16
+prefix: AntiSpam
+authors: [ TetraTheta ]
+description: I hate spam
+commands:
+  AntiSpam:
+    description: Command about AntiSpam Plugin
+    usage: /<command> [subcommand]
+    permission: AntiSpam.admin

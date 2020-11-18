@@ -1,0 +1,12 @@
+login-spam:
+  # minute: how many user can login in? [Second]
+  minute: 60
+  # limit: how many time user can login?
+  limit: 3
+  # punish-type: how do you want to punish those people?
+  # kick, tempban, ban
+  punish-type: tempban
+  # tempban-time: how long do you want to tempban that person? [Seconds]
+  tempban-time: 120
+  # message: what phrase do you want to send those kick/banned people?
+  message: 'You have been tempbanned for login spamming! Join after 2 minutes.'
